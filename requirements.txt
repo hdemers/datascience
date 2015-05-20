@@ -1,0 +1,8 @@
+pandas==0.16.0
+scipy==0.15.1
+seaborn==0.5.1
+scikit-learn==0.16.0
+statsmodels==0.6.1
+git+https://github.com/jordanh/neurio-python.git@master#egg=neurio-master
+networkx
+pygraphviz
