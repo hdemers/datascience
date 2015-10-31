@@ -31,12 +31,14 @@ def autocorr_fast(x):
     return acorr[len(acorr) / 2:]
 
 
-def plot_stochastic(trace, name='stochastic'):
+def plot_stochastic(node, chain=None, burn=0):
+    name = node.__name__
+    trace = node.trace(chain=chain)[burn:]
     s = pd.Series(trace)
 
     plt.figure(figsize=(15, 6))
     ax = plt.subplot2grid((2, 3), (0, 0), rowspan=2)
-    histogram(trace, name, ax)
+    histogram(node, chain, burn, ax)
 
     ax = plt.subplot2grid((2, 3), (0, 1), colspan=2)
     ax.plot(s)
@@ -50,7 +52,9 @@ def plot_stochastic(trace, name='stochastic'):
     ax.set_xlabel("Lag", size=label_size)
 
 
-def histogram(trace, name='stochastic', ax=None):
+def histogram(node, chain=None, burn=0, ax=None):
+    name = node.__name__
+    trace = node.trace(chain=chain)[burn:]
     s = pd.Series(trace)
 
     ax = sns.distplot(s, ax=ax)
@@ -67,8 +71,10 @@ def histogram(trace, name='stochastic', ax=None):
             horizontalalignment='center', verticalalignment='center',
             transform=ax.transAxes, size=17, color=textcolor)
 
+    mcmc_stats = node.stats(chain=chain)
+
     # Show HDI
-    hdi_min, hdi_max = hdi(trace)
+    hdi_min, hdi_max = mcmc_stats['95% HPD interval']
     y_min, y_max = ax.get_ylim()
     y = 0.05 * (y_max - y_min) + y_min
     ax.plot((hdi_min, hdi_max), (y, y), color=textcolor, linewidth=4)
@@ -101,3 +107,7 @@ def mode(trace):
     x = np.linspace(s.min(), s.max(), 1000)
     density = pd.Series(kernel.evaluate(x), index=x)
     return density.argmax()
+
+
+def representativeness(model_variables, stochastic, steps=5000):
+    pass

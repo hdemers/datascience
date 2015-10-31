@@ -12,7 +12,7 @@ def plot_lassolarscv_paths(clf, df, predictors, target):
         .assign(alpha=alphas)
         .sort('alpha')
     )
-    with sns.color_palette('Set3', 12):
+    with sns.color_palette('deep', 12):
         ax = coef_path.plot('alpha', figsize=(11, 5), grid=False)
     ax.set_ylabel("Coefficient values")
 
